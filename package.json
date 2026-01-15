@@ -1,0 +1,24 @@
+{
+  "name": "my-telegram-shop",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "dependencies": {
+    "@nuxt/ui": "^4.3.0",
+    "@pinia/nuxt": "^0.11.3",
+    "@supabase/supabase-js": "^2.90.1",
+    "@twa-dev/sdk": "^8.0.2",
+    "axios": "^1.13.2",
+    "mongoose": "^9.1.3",
+    "nuxt": "^4.2.2",
+    "pinia": "^3.0.4",
+    "vue": "^3.5.26",
+    "vue-router": "^4.6.4"
+  }
+}
