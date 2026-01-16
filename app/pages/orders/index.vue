@@ -164,6 +164,29 @@ function formatDate(dateStr: string) {
         </div>
 
         <div
+          class="space-y-2 mb-3 border-t border-gray-100 dark:border-gray-800 pt-2"
+        >
+          <div class="flex justify-between text-sm">
+            <span class="text-gray-500">Subtotal</span>
+            <span
+              >${{
+                order.items.reduce(
+                  (acc: number, item: OrderItem) =>
+                    acc + item.price * item.quantity,
+                  0
+                )
+              }}</span
+            >
+          </div>
+          <div v-if="order.shippingMethod" class="flex justify-between text-sm">
+            <span class="text-gray-500"
+              >Shipping ({{ order.shippingMethod.name }})</span
+            >
+            <span>${{ order.shippingMethod.price }}</span>
+          </div>
+        </div>
+
+        <div
           class="border-t border-gray-100 dark:border-gray-800 pt-2 flex justify-between items-center font-bold"
         >
           <span>Total</span>

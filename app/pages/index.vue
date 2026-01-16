@@ -6,8 +6,11 @@ import { useCartStore } from "~/stores/cart";
 import { useTelegramStore } from "~/stores/telegram";
 import { useProductsStore } from "~/stores/products";
 import { useCategoriesStore } from "~/stores/categories";
+import { useShopStore } from "~/stores/shop";
 import api from "~/utils/api";
+
 const telegramStore = useTelegramStore();
+const shopStore = useShopStore();
 
 const productsStore = useProductsStore();
 const { products } = storeToRefs(productsStore);
@@ -25,6 +28,7 @@ onMounted(async () => {
   await Promise.all([
     productsStore.fetchProducts(),
     categoriesStore.fetchCategories(),
+    shopStore.fetchShopSettings(),
   ]);
 });
 
@@ -170,12 +174,25 @@ function closeModal() {
         border-color: var(--tg-theme-section-separator-color, #eee);
       "
     >
-      <h1 class="text-xl font-bold tracking-tight">Store</h1>
-      <NuxtLink
-        to="/orders"
-        class="text-sm font-bold bg-gray-100 dark:bg-gray-800 px-3 py-1.5 rounded-lg hover:bg-gray-200 ml-2"
-        >My Orders</NuxtLink
-      >
+      <div class="flex items-center gap-2">
+        <img
+          v-if="shopStore.logo"
+          :src="shopStore.logo"
+          alt="Logo"
+          class="h-8 w-auto object-contain"
+        />
+        <h1 v-else class="text-xl font-bold tracking-tight">
+          {{ shopStore.name }}
+        </h1>
+      </div>
+
+      <div class="flex items-center">
+        <NuxtLink
+          to="/orders"
+          class="text-sm font-bold bg-gray-100 dark:bg-gray-800 px-3 py-1.5 rounded-lg hover:bg-gray-200 ml-2"
+          >My Orders</NuxtLink
+        >
+      </div>
 
       <button
         @click="isSheetOpen = true"

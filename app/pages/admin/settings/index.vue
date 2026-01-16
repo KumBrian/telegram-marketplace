@@ -48,6 +48,31 @@ async function handleAddShipping() {
     alert(e.message);
   }
 }
+
+const uploadingLogo = ref(false);
+async function handleLogoUpload(e: Event) {
+  const file = (e.target as HTMLInputElement).files?.[0];
+  if (!file) return;
+
+  uploadingLogo.value = true;
+  const formData = new FormData();
+  formData.append("file", file);
+
+  try {
+    const res = await $fetch("/api/admin/upload", {
+      method: "POST",
+      body: formData,
+    });
+    // The upload endpoint returns { urls: string[] }
+    if ((res as any).urls && (res as any).urls.length > 0) {
+      store.shopSettings.logoUrl = (res as any).urls[0];
+    }
+  } catch (e: any) {
+    alert("Upload failed: " + e.message);
+  } finally {
+    uploadingLogo.value = false;
+  }
+}
 </script>
 
 <template>
@@ -69,6 +94,77 @@ async function handleAddShipping() {
     </div>
 
     <div v-else class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <!-- GENERAL SETTINGS -->
+      <section class="md:col-span-2">
+        <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+          <span>🏪</span> General Settings
+        </h2>
+        <div
+          class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700"
+        >
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label class="block text-sm font-bold mb-2">Store Name</label>
+              <input
+                v-model="store.shopSettings.storeName"
+                class="w-full text-sm p-2 rounded border border-gray-300 dark:border-gray-600 dark:bg-gray-900 dark:text-white"
+                placeholder="My Awesome Shop"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-bold mb-2">Logo</label>
+
+              <!-- Preview -->
+              <div v-if="store.shopSettings.logoUrl" class="mb-2">
+                <img
+                  :src="store.shopSettings.logoUrl"
+                  class="h-12 w-auto object-contain border rounded bg-gray-50 dark:bg-black"
+                />
+              </div>
+
+              <div class="flex gap-2">
+                <input
+                  v-model="store.shopSettings.logoUrl"
+                  class="flex-1 text-sm p-2 rounded border border-gray-300 dark:border-gray-600 dark:bg-gray-900 dark:text-white"
+                  placeholder="https://example.com/logo.png"
+                />
+                <label
+                  class="relative cursor-pointer bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 px-3 py-2 rounded border border-gray-300 dark:border-gray-600 flex items-center justify-center min-w-[100px]"
+                >
+                  <span v-if="uploadingLogo" class="text-xs font-bold"
+                    >Uploading...</span
+                  >
+                  <span v-else class="text-xs font-bold">Upload</span>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    class="absolute inset-0 opacity-0 cursor-pointer"
+                    @change="handleLogoUpload"
+                    :disabled="uploadingLogo"
+                  />
+                </label>
+              </div>
+              <p class="text-xs text-gray-500 mt-1">
+                Paste a URL or upload an image.
+              </p>
+            </div>
+          </div>
+          <div class="mt-4 flex justify-end">
+            <button
+              @click="
+                store.updateShopSettings(
+                  store.shopSettings.storeName,
+                  store.shopSettings.logoUrl
+                )
+              "
+              class="bg-blue-600 text-white font-bold py-2 px-6 rounded-lg text-sm hover:bg-blue-700"
+            >
+              Save General Settings
+            </button>
+          </div>
+        </div>
+      </section>
+
       <!-- PAYMENT METHODS -->
       <section>
         <h2 class="text-xl font-bold mb-4 flex items-center gap-2">

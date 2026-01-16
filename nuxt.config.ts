@@ -13,6 +13,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     mongodbUri: process.env.MONGODB_URI, // Private (Server only)
     botToken: process.env.BOT_TOKEN, // Private (For verifying orders)
+    adminPassword: process.env.ADMIN_PASSWORD,
     public: {
       // Public keys if needed
     },
